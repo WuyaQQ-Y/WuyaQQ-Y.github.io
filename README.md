@@ -1,11 +1,11 @@
 # 作品集站点（GitHub Pages）
 
-个人作品集，静态站，托管在 GitHub Pages。页面不署名，以经历与作品叙事为主。
+个人作品集，静态站。**线上地址：https://wuyaqq-y.github.io**（仓库 WuyaQQ-Y/WuyaQQ-Y.github.io，公开，Pages 已开）。页面不署名，只放作品。
 
 ## 结构
 
 ```
-index.html              作品集主页（一页式：作品 / 在研 / 经历 / 联系）
+index.html              作品集主页（一页式：作品 / 在研 / 联系，不含自我介绍与经历）
 shanwu/
   index.html            作品一：山雾茶事·茶空间品牌官网（概念设计 demo）
   assets/*.jpg          首页六张茶席图，已从 PNG 压到 JPEG（6.4MB → 0.54MB）
@@ -35,8 +35,9 @@ python -m http.server 8899
 
 ## 待办
 
-- [ ] 联系邮箱（主页 `#contact` 里现在是"（待填）"）
-- [ ] 用户名定了以后：仓库名 = `<用户名>.github.io`
+- [x] 联系邮箱：wuyaQQ-Y@qq.com（已填并上线）
+- [x] 仓库已建：`WuyaQQ-Y.github.io`，Pages 已开（main / root）
+- 更新方式：改完文件 `git add -A && git commit -m "..." && git push`，1 分钟内自动上线
 - [ ] 第二批作品：展厅《中国计时历史馆》、升仙原型 v4、对弈、2048
 - [ ] 渲染图（3d/餐饮空间）压缩后再传，单张压到 300KB 以内
 

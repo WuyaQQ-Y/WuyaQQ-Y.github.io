@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>山雾茶事 · 一间城市的茶空间</title>
+<style>
+  :root {
+    --paper: #f6f1e7;
+    --paper2: #efe7d4;
+    --card: #fbf8f0;
+    --ink: #201c15;
+    --muted: #71685a;
+    --line: #d9cfb8;
+    --cinnabar: #9d2b22;
+    --gold: #8a6d3b;
+    --teagreen: #5d7a5c;
+    --teagreen-l: #e8ede3;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .serif-kai { font-family: "KaiTi", "STKaiti", "Noto Serif SC", serif; }
+
+  /* ---------- 装饰叶片 ---------- */
+  .leaf {
+    position: absolute; pointer-events: none; user-select: none;
+    opacity: .5;
+  }
+  .leaf svg { display: block; }
+
+  /* ---------- 顶栏 ---------- */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    background: rgba(246, 241, 231, 0.94);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  header::after {
+    content: ""; display: block; height: 2px;
+    background: repeating-linear-gradient(90deg, var(--gold) 0 6px, transparent 6px 16px);
+    opacity: .55;
+  }
+  .nav-inner {
+    max-width: 1180px; margin: 0 auto; padding: 0 32px;
+    height: 64px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand { font-size: 17px; letter-spacing: 0.32em; display: flex; align-items: center; gap: 12px; }
+  .brand b { font-weight: 600; }
+  .brand em { font-style: normal; color: var(--cinnabar); }
+  .brand .seal {
+    width: 26px; height: 26px; border: 1.5px solid var(--cinnabar);
+    color: var(--cinnabar); font-size: 12px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transform: rotate(-4deg); letter-spacing: 0;
+  }
+  nav a {
+    font-size: 14px; color: var(--muted); text-decoration: none;
+    margin-left: 22px; letter-spacing: 0.12em;
+    padding: 8px 0; transition: color .2s;
+  }
+  nav a:hover { color: var(--cinnabar); }
+  nav a.cta {
+    color: var(--paper); background: var(--ink);
+    padding: 9px 20px; border-radius: 2px;
+  }
+  nav a.cta:hover { background: var(--cinnabar); color: var(--paper); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    max-width: 1180px; margin: 0 auto; padding: 185px 32px 100px;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-ring {
+    position: absolute; right: -120px; top: -80px;
+    width: 460px; height: 460px; border-radius: 50%;
+    border: 1px solid rgba(138, 107, 59, 0.28);
+    pointer-events: none;
+  }
+  .hero-ring::after {
+    content: ""; position: absolute; inset: 44px;
+    border-radius: 50%; border: 1px dashed rgba(157, 43, 34, 0.25);
+  }
+  .hero .kicker {
+    font-size: 13px; letter-spacing: 0.42em; color: var(--gold);
+    margin-bottom: 30px; display: flex; align-items: center; gap: 14px;
+  }
+  .hero .kicker::before {
+    content: ""; width: 26px; height: 1px; background: var(--cinnabar);
+  }
+  .hero h1 {
+    font-size: clamp(46px, 7.5vw, 92px);
+    font-weight: 700; line-height: 1.12; letter-spacing: 0.05em;
+    font-family: "KaiTi", "STKaiti", "Noto Serif SC", serif;
+  }
+  .hero h1 .thin {
+    font-weight: 400;
+    background: linear-gradient(120deg, var(--cinnabar) 0%, var(--gold) 60%, #b08a3e 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+  }
+  .hero .sub {
+    margin-top: 34px; font-size: 17px; color: var(--muted);
+    max-width: 470px;
+  }
+  .hero .sub b { color: var(--ink); }
+  .hero .cta-row { margin-top: 48px; display: flex; gap: 18px; align-items: center; }
+  .btn {
+    display: inline-block; padding: 14px 34px;
+    font-family: inherit; font-size: 15px; letter-spacing: 0.18em;
+    text-decoration: none; cursor: pointer; border: 1px solid var(--ink);
+    background: none; color: var(--ink); transition: all .25s;
+    min-height: 44px; line-height: 1.2;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn.solid { background: var(--cinnabar); border-color: var(--cinnabar); color: var(--paper); }
+  .btn.solid:hover { background: #7f201a; border-color: #7f201a; }
+
+  /* 竖排艺术字 */
+  .vtext-wrap { position: absolute; right: 60px; top: 150px; display: flex; gap: 22px; align-items: flex-start; z-index: 2; }
+  .vtext {
+    writing-mode: vertical-rl;
+    font-size: 70px; letter-spacing: 0.22em; line-height: 1.4;
+    font-family: "KaiTi", "STKaiti", serif;
+    background: linear-gradient(180deg, var(--ink) 30%, var(--gold) 130%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+  }
+  .vtext .v-first { color: var(--cinnabar); -webkit-text-fill-color: var(--cinnabar); font-size: 1.22em; }
+  .vtext-line { width: 1px; height: 260px; background: var(--cinnabar); margin-top: 14px; }
+  .stamp {
+    width: 78px; height: 78px; border: 2.5px solid var(--cinnabar);
+    color: var(--cinnabar);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 24px; letter-spacing: 0.06em; line-height: 1.3;
+    transform: rotate(-4deg); flex-shrink: 0;
+  }
+
+  /* ---------- 通用 ---------- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; }
+  section { padding: 88px 0; border-bottom: 1px solid var(--line); position: relative; }
+  section:last-of-type { border-bottom: none; }
+  .sec-head { margin-bottom: 44px; }
+  .deco-line {
+    height: 1px; margin-bottom: 18px;
+    background: repeating-linear-gradient(90deg, var(--gold) 0 5px, transparent 5px 14px);
+    opacity: .7;
+  }
+  .sec-no {
+    font-size: 12px; letter-spacing: 0.34em; color: var(--gold);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 12px;
+  }
+  .sec-no::before { content: ""; width: 9px; height: 9px; background: var(--cinnabar); flex-shrink: 0; }
+  .sec-no .cn { font-family: "KaiTi", "STKaiti", serif; font-size: 15px; color: var(--teagreen); letter-spacing: .2em; }
+  h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 600; letter-spacing: 0.08em; }
+  p.lead { font-size: 16px; color: var(--muted); max-width: 560px; margin-top: 14px; }
+
+  /* ---------- 缘起 ---------- */
+  .origin-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 44px; align-items: stretch; }
+  .origin-grid > div { padding: 44px 48px; border: 1px solid var(--line); background: var(--card); border-radius: 14px; }
+  .origin-grid p { margin-bottom: 16px; }
+  .origin-grid p b { color: var(--cinnabar); font-weight: 600; }
+  .origin-main h2 { margin-bottom: 22px; }
+  .origin-main { position: relative; }
+  .origin-side {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px;
+    background: linear-gradient(160deg, var(--paper2), #f0eadb) !important;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .origin-side .big-char {
+    font-size: 108px; line-height: 1; color: var(--cinnabar);
+    font-family: "KaiTi", "STKaiti", serif;
+    text-shadow: 0 6px 18px rgba(157, 43, 34, 0.14);
+  }
+  .origin-side .note { font-size: 14px; color: var(--muted); letter-spacing: 0.2em; line-height: 2.2; }
+  .origin-side .note span { color: var(--cinnabar); }
+  .origin-side .rule { width: 46px; height: 1px; background: var(--gold); }
+
+  /* ---------- 空间 ---------- */
+  .space-item {
+    display: grid; grid-template-columns: 1.1fr 1fr;
+    border: 1px solid var(--line); background: var(--card);
+    border-radius: 14px; overflow: hidden;
+    margin-bottom: 36px; transition: box-shadow .3s ease;
+  }
+  .space-item:hover { box-shadow: 0 8px 28px rgba(32, 28, 21, 0.08); }
+  .space-item:last-child { margin-bottom: 0; }
+  .space-media { aspect-ratio: 4 / 3; overflow: hidden; position: relative; }
+  .space-media img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block; transition: transform .6s ease;
+  }
+  .space-item:hover .space-media img { transform: scale(1.04); }
+  .space-media::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(93, 122, 92, 0.12), transparent 40%);
+    pointer-events: none;
+  }
+  .space-body { padding: 40px 44px; border-left: 1px solid var(--line); display: flex; flex-direction: column; justify-content: center; }
+  .space-item.flip .space-media { order: 2; }
+  .space-item.flip .space-body { border-left: none; border-right: 1px solid var(--line); }
+  .space-body .num { font-size: 13px; letter-spacing: 0.3em; color: var(--teagreen); margin-bottom: 14px; }
+  .space-body h3 { font-size: 25px; font-weight: 600; letter-spacing: 0.14em; margin-bottom: 14px; }
+  .space-body h3 .kai { font-family: "KaiTi", "STKaiti", serif; color: var(--gold); font-size: 29px; margin-left: 10px; }
+  .space-body p { color: var(--muted); font-size: 15px; }
+  .space-body .meta {
+    margin-top: 22px; font-size: 13px; color: var(--gold); letter-spacing: 0.16em;
+    border-top: 1px dashed var(--line); padding-top: 14px;
+  }
+
+  /* ---------- 茶单 ---------- */
+  .menu-grid { display: grid; grid-template-columns: 380px 1fr; gap: 44px; align-items: stretch; }
+  .menu-fig {
+    border: 1px solid var(--line); border-radius: 14px;
+    background: var(--card); padding: 28px; display: flex; flex-direction: column; gap: 22px;
+  }
+  .menu-fig .round-img {
+    width: 100%; aspect-ratio: 1; border-radius: 50%;
+    overflow: hidden; position: relative;
+    border: 1px solid rgba(138, 107, 59, 0.4); padding: 8px;
+  }
+  .menu-fig .round-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+  .menu-fig .small-img { border-radius: 10px; overflow: hidden; }
+  .menu-fig .small-img img { width: 100%; height: 150px; object-fit: cover; display: block; }
+  .menu-fig .fig-cap { text-align: center; font-size: 12px; letter-spacing: 0.3em; color: var(--muted); }
+  .menu-list { border: 1px solid var(--line); background: var(--card); border-radius: 14px; padding: 34px 40px; }
+  .menu-group { margin-bottom: 26px; }
+  .menu-group:last-child { margin-bottom: 0; }
+  .menu-group h3 {
+    font-size: 15px; letter-spacing: 0.3em; color: var(--teagreen);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+  }
+  .menu-group h3::before { content: ""; width: 16px; height: 1px; background: var(--teagreen); }
+  .m-row {
+    display: grid; grid-template-columns: 1fr auto; align-items: baseline;
+    padding: 12px 0; border-bottom: 1px dashed var(--line); gap: 16px;
+  }
+  .m-row:last-child { border-bottom: none; }
+  .m-name { font-size: 16px; letter-spacing: 0.08em; }
+  .m-name small { font-size: 12.5px; color: var(--muted); margin-left: 10px; letter-spacing: 0.1em; }
+  .m-price { font-size: 15px; color: var(--cinnabar); letter-spacing: 0.08em; white-space: nowrap; font-family: "KaiTi", "STKaiti", serif; }
+
+  /* ---------- 茶事 ---------- */
+  .tea-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 44px; align-items: stretch; }
+  .tea-fig { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); position: relative; }
+  .tea-fig img { width: 100%; height: 100%; object-fit: cover; display: block; min-height: 320px; }
+  .timeline { border-left: 1px solid var(--line); margin-left: 6px; padding-left: 44px; }
+  .t-item { position: relative; padding: 0 0 40px 0; }
+  .t-item:last-child { padding-bottom: 0; }
+  .t-item::before {
+    content: ""; position: absolute; left: -53px; top: 8px;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--paper); border: 2px solid var(--cinnabar);
+  }
+  .t-item .season { font-size: 13px; letter-spacing: 0.3em; color: var(--teagreen); margin-bottom: 6px; }
+  .t-item h3 { font-size: 20px; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .t-item p { font-size: 14.5px; color: var(--muted); max-width: 520px; }
+  .t-item .date { font-size: 13px; color: var(--gold); margin-top: 8px; letter-spacing: 0.12em; }
+
+  /* ---------- 定制（空白模板） ---------- */
+  .custom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .custom-slot {
+    border: 2px dashed #cfc2a8; border-radius: 14px;
+    padding: 40px 32px; min-height: 180px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    text-align: center; position: relative;
+    background: rgba(251, 248, 240, 0.55);
+    transition: border-color .25s, background .25s;
+  }
+  .custom-slot:hover { border-color: var(--teagreen); background: var(--teagreen-l); }
+  .custom-slot .slot-tag {
+    position: absolute; top: 12px; left: 14px;
+    font-size: 11px; letter-spacing: 0.24em; color: var(--gold);
+    border: 1px solid var(--line); border-radius: 20px;
+    padding: 2px 12px; background: var(--paper);
+  }
+  .custom-slot .slot-icon { opacity: .55; }
+  .custom-slot h3 { font-size: 17px; letter-spacing: 0.2em; color: var(--ink); }
+  .custom-slot p { font-size: 13px; color: var(--muted); letter-spacing: 0.12em; }
+
+  /* ---------- 预约 ---------- */
+  .book-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 44px; align-items: stretch; }
+  .book-info { border: 1px solid var(--line); background: var(--paper2); padding: 40px 44px; border-radius: 14px; }
+  .book-info h2 { margin-bottom: 20px; }
+  .book-info p { color: var(--muted); font-size: 15px; margin-bottom: 12px; }
+  .book-info .way {
+    margin-top: 24px; font-size: 14px; letter-spacing: 0.1em;
+    border-top: 1px dashed var(--line); padding-top: 18px; line-height: 2.2;
+  }
+  .book-info .way b { color: var(--ink); }
+  .book-form {
+    border: 1px solid var(--line); background: var(--card);
+    padding: 40px 44px; border-radius: 14px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .book-form label { font-size: 13px; letter-spacing: 0.2em; color: var(--muted); margin-top: 6px; }
+  .book-form label:first-child { margin-top: 0; }
+  .book-form input, .book-form textarea, .book-form select {
+    font-family: inherit; font-size: 15px;
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 13px 16px; color: var(--ink); outline: none;
+    transition: border-color .2s; width: 100%; border-radius: 8px;
+  }
+  .book-form input:focus, .book-form textarea:focus, .book-form select:focus { border-color: var(--cinnabar); }
+  .book-form textarea { min-height: 96px; resize: vertical; }
+  .book-form .btn { align-self: flex-start; margin-top: 12px; border-radius: 8px; }
+
+  /* ---------- 页脚 ---------- */
+  footer { padding: 48px 0 56px; text-align: center; position: relative; }
+  .f-deco {
+    height: 1px; margin: 0 auto 40px; max-width: 1180px;
+    background: repeating-linear-gradient(90deg, var(--gold) 0 5px, transparent 5px 14px);
+    opacity: .7;
+  }
+  footer .f-brand { font-size: 16px; letter-spacing: 0.34em; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  footer .f-brand em { font-style: normal; color: var(--cinnabar); }
+  footer .f-line { margin: 16px 0; font-size: 13px; color: var(--muted); letter-spacing: 0.24em; }
+  footer .f-copy { font-size: 12px; color: #a49a89; letter-spacing: 0.18em; }
+
+  /* ---------- 入场动效 ---------- */
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 900px) {
+    .hero { padding: 150px 24px 70px; }
+    .vtext-wrap, .hero-ring { display: none; }
+    .origin-grid, .book-grid, .menu-grid, .tea-grid { grid-template-columns: 1fr; gap: 28px; }
+    .space-item { grid-template-columns: 1fr; }
+    .space-body { border-left: none; border-top: 1px solid var(--line); }
+    .space-item.flip .space-body { border-right: none; border-top: 1px solid var(--line); border-bottom: none; }
+    .space-item.flip .space-media { order: 0; }
+    .custom-grid { grid-template-columns: 1fr; }
+    nav a { margin-left: 12px; font-size: 13px; }
+    nav a.cta { padding: 8px 14px; }
+    section { padding: 60px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="brand serif-kai"><span class="seal">山雾</span>山雾<b>茶事</b><em>·</em></div>
+    <nav>
+      <a href="#origin">缘起</a>
+      <a href="#space">空间</a>
+      <a href="#menu">茶单</a>
+      <a href="#cha">茶事</a>
+      <a href="#custom">定制</a>
+      <a href="#book" class="cta">预约茶叙</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-ring"></div>
+  <div class="leaf" style="left: 42px; bottom: 40px; transform: rotate(-18deg);"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#5d7a5c" stroke-width="1.4"><path d="M12 2C16.5 7.5 17 15 12 22C7 15 7.5 7.5 12 2Z"/><path d="M12 7v12"/></svg></div>
+  <div class="leaf" style="left: 96px; bottom: 74px; transform: rotate(24deg) scale(0.8);"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8a6d3b" stroke-width="1.4"><path d="M12 2C16.5 7.5 17 15 12 22C7 15 7.5 7.5 12 2Z"/><path d="M12 7v12"/></svg></div>
+  <div class="leaf" style="right: 300px; bottom: 30px; transform: rotate(58deg) scale(0.65);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9d2b22" stroke-width="1.3"><path d="M12 2C16.5 7.5 17 15 12 22C7 15 7.5 7.5 12 2Z"/><path d="M12 7v12"/></svg></div>
+
+  <div class="kicker">SHANWU CHASHI · 一间城市的茶空间</div>
+  <h1>一盏茶<br><span class="thin">见山，见雾</span></h1>
+  <p class="sub">山雾茶事，藏于市井的一间茶室。<b>茶要慢泡，人要对坐</b>——我们备好茶、器与一间安静的房间，等你来坐一坐。</p>
+  <div class="cta-row">
+    <a href="#book" class="btn solid">预约茶叙</a>
+    <a href="#menu" class="btn">看看茶单</a>
+  </div>
+  <div class="vtext-wrap">
+    <div class="vtext serif-kai"><span class="v-first">茶</span>烟起处是人间</div>
+    <div class="vtext-line"></div>
+    <div class="stamp serif-kai">山<br>雾</div>
+  </div>
+</div>
+
+<section id="origin">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="deco-line"></div>
+      <div class="sec-no">壹 · <span class="cn">缘起</span></div>
+      <h2>为什么是山雾</h2>
+    </div>
+    <div class="origin-grid">
+      <div class="origin-main">
+        <p class="lead">山在远处，雾在眼前。做茶的人说，好茶要有山水气；我们想，喝茶的地方也该有。</p>
+        <p>2024 年春，我们在老城区的巷子里租下一间临街的老屋。没有大改，只修了漏雨的顶，刷白了墙，把房东留下的旧木桌重新打磨——<b>茶室就这样开了。</b></p>
+        <p>不求热闹，只求一间房、几把椅、一柜子茶。你来，我们泡茶；你不来，我们自己喝。</p>
+      </div>
+      <div class="origin-side">
+        <div class="big-char serif-kai">慢</div>
+        <div class="rule"></div>
+        <div class="note">
+          茶字拆开，是人在草木间。<br>
+          快是一种能力，<br>
+          慢是一种选择。<br>
+          <span>山雾茶事，选慢。</span>
+        </div>
+        <div class="leaf" style="right: -14px; bottom: -10px; transform: rotate(-30deg); opacity:.35;"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#5d7a5c" stroke-width="1.2"><path d="M12 2C16.5 7.5 17 15 12 22C7 15 7.5 7.5 12 2Z"/><path d="M12 7v12"/></svg></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="space">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="deco-line"></div>
+      <div class="sec-no">贰 · <span class="cn">空间</span></div>
+      <h2>三间房，三种天色</h2>
+      <p class="lead">整间茶室不大，只有三间。每间各有脾气，看你当天的心情。</p>
+    </div>
+
+    <div class="space-item">
+      <div class="space-media"><img src="assets/ting-song.jpg" alt="听松 · 主茶席"></div>
+      <div class="space-body">
+        <div class="num">01</div>
+        <h3>听松<span class="kai">· 主茶席</span></h3>
+        <p>靠窗的一间，正对院里的老松。坐在这里，茶烟与松影一起晃。适合一个人发呆，或与三五好友闲坐半日。</p>
+        <div class="meta">约 12 席 · 窗外有松</div>
+      </div>
+    </div>
+
+    <div class="space-item flip">
+      <div class="space-media"><img src="assets/guan-wu.jpg" alt="观雾 · 雅间"></div>
+      <div class="space-body">
+        <div class="num">02</div>
+        <h3>观雾<span class="kai">· 雅间</span></h3>
+        <p>最安静的一间，隔音做了三层。谈事、读书、独饮，都合适。雨天雾起时，窗面一片白，是这间房最好的时刻。</p>
+        <div class="meta">约 4 席 · 独立隔间</div>
+      </div>
+    </div>
+
+    <div class="space-item">
+      <div class="space-media"><img src="assets/zhu-xue.jpg" alt="煮雪 · 茶室后厨"></div>
+      <div class="space-body">
+        <div class="num">03</div>
+        <h3>煮雪<span class="kai">· 茶室后厨</span></h3>
+        <p>其实是我们的操作间——炭炉、陶壶、一墙的茶罐。茶会时这里最忙，也最香。熟客喜欢搬个小凳坐门口看我们煮水。</p>
+        <div class="meta">非开放 · 茶会日可见</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="menu">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="deco-line"></div>
+      <div class="sec-no">叁 · <span class="cn">茶单</span></div>
+      <h2>今日茶单</h2>
+      <p class="lead">茶按壶计价，随到随泡。水是山泉水，器是粗陶与白瓷——茶不好，不敢收你的钱。</p>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-fig">
+        <div class="round-img"><img src="assets/cha-tang.jpg" alt="茶汤"></div>
+        <div class="fig-cap">今日茶汤</div>
+        <div class="small-img"><img src="assets/gan-cha.jpg" alt="干茶"></div>
+        <div class="fig-cap">干茶 · 本季新到</div>
+      </div>
+      <div class="menu-list">
+        <div class="menu-group">
+          <h3>绿茶 · 青茶</h3>
+          <div class="m-row"><span class="m-name">西湖龙井<small>明前头采</small></span><span class="m-price">¥48 / 壶</span></div>
+          <div class="m-row"><span class="m-name">洞庭碧螺春<small>卷曲如螺</small></span><span class="m-price">¥42 / 壶</span></div>
+          <div class="m-row"><span class="m-name">安吉白茶<small>白化茶，鲜爽</small></span><span class="m-price">¥38 / 壶</span></div>
+        </div>
+        <div class="menu-group">
+          <h3>白茶 · 乌龙</h3>
+          <div class="m-row"><span class="m-name">白毫银针<small>福鼎 · 单芽</small></span><span class="m-price">¥68 / 壶</span></div>
+          <div class="m-row"><span class="m-name">老白茶<small>2015 寿眉 · 药香</small></span><span class="m-price">¥38 / 壶</span></div>
+          <div class="m-row"><span class="m-name">岩茶水仙<small>武夷山 · 醇厚</small></span><span class="m-price">¥58 / 壶</span></div>
+          <div class="m-row"><span class="m-name">岩茶肉桂<small>武夷山 · 辛锐</small></span><span class="m-price">¥58 / 壶</span></div>
+        </div>
+        <div class="menu-group">
+          <h3>普洱 · 红茶</h3>
+          <div class="m-row"><span class="m-name">普洱熟茶<small>十年陈 · 糯香</small></span><span class="m-price">¥52 / 壶</span></div>
+          <div class="m-row"><span class="m-name">祁门红茶<small>工夫 · 蜜香</small></span><span class="m-price">¥46 / 壶</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cha">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="deco-line"></div>
+      <div class="sec-no">肆 · <span class="cn">茶事</span></div>
+      <h2>一年四场茶会</h2>
+      <p class="lead">不设常客群，只办四场茶会，一季一场。想来的，提前预约。</p>
+    </div>
+    <div class="tea-grid">
+      <div class="tea-fig"><img src="assets/cha-xi.jpg" alt="茶席"></div>
+      <div class="timeline">
+        <div class="t-item">
+          <div class="season">春 · 开园</div>
+          <h3>头采新茶品鉴</h3>
+          <p>清明前后，收当年第一茬绿茶。一壶从浓泡到淡，喝的是春天的头一口。</p>
+          <div class="date">每年 3 月底 · 12 席</div>
+        </div>
+        <div class="t-item">
+          <div class="season">夏 · 消暑</div>
+          <h3>冷泡与老白茶夜话</h3>
+          <p>盛夏夜，冷泡白毫银针配蒲扇，聊到月亮上来。不设主题，来即是客。</p>
+          <div class="date">每年 7 月中 · 8 席</div>
+        </div>
+        <div class="t-item">
+          <div class="season">秋 · 收</div>
+          <h3>岩茶专场</h3>
+          <p>武夷山的岩茶到货，一晚上喝三道：水仙、肉桂、老丛。茶气足，话就少。</p>
+          <div class="date">每年 10 月初 · 10 席</div>
+        </div>
+        <div class="t-item">
+          <div class="season">冬 · 围炉</div>
+          <h3>炭火煮茶</h3>
+          <p>天冷的日子，炭炉煮老白茶，加两粒红枣。屋外落雪，屋里咕嘟咕嘟。</p>
+          <div class="date">每年 12 月底 · 12 席</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="custom">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="deco-line"></div>
+      <div class="sec-no">伍 · <span class="cn">定制</span></div>
+      <h2>留给你的位置</h2>
+      <p class="lead">本页为演示稿。以下板块是预留模板位——换上你的内容，就是你的官网。</p>
+    </div>
+    <div class="custom-grid">
+      <div class="custom-slot">
+        <span class="slot-tag">模板位 · 一</span>
+        <svg class="slot-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8a6d3b" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 10h18"/><path d="M7 6.8v.01M10 6.8v.01"/></svg>
+        <h3>企业介绍</h3>
+        <p>放你的品牌故事、理念与历程</p>
+      </div>
+      <div class="custom-slot">
+        <span class="slot-tag">模板位 · 二</span>
+        <svg class="slot-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8a6d3b" stroke-width="1.4"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></svg>
+        <h3>团队风采</h3>
+        <p>放团队照片、简介与分工</p>
+      </div>
+      <div class="custom-slot">
+        <span class="slot-tag">模板位 · 三</span>
+        <svg class="slot-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8a6d3b" stroke-width="1.4"><path d="M4 15l5-5 4 4 6-7"/><path d="M15 7h4v4"/></svg>
+        <h3>客户案例</h3>
+        <p>放合作案例、过程与评价</p>
+      </div>
+      <div class="custom-slot">
+        <span class="slot-tag">模板位 · 四</span>
+        <svg class="slot-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8a6d3b" stroke-width="1.4"><circle cx="12" cy="9" r="4.5"/><path d="M12 13.5V20"/><path d="M8 17h8"/></svg>
+        <h3>资质荣誉</h3>
+        <p>放证书、报道与所获奖项</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="book">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="deco-line"></div>
+      <div class="sec-no">陆 · <span class="cn">预约</span></div>
+      <h2>来坐坐</h2>
+    </div>
+    <div class="book-grid">
+      <div class="book-info">
+        <p>散客无需预约，随到随泡。茶会、包间与定制茶礼，请提前三天预约。</p>
+        <p>茶室不大，招呼不周的地方，先告个罪。</p>
+        <div class="way">
+          地址：老城区 · 梧桐巷 17 号<br>
+          <b>微信：shanwu_chashi</b>（备注"约茶"）<br>
+          营业：每日 10:00 — 22:00
+        </div>
+      </div>
+      <form class="book-form" onsubmit="return false">
+        <label for="name">怎么称呼</label>
+        <input id="name" type="text" placeholder="你的名字" required>
+        <label for="wechat">微信号</label>
+        <input id="wechat" type="text" placeholder="用于确认预约" required>
+        <label for="type">想约什么</label>
+        <select id="type">
+          <option>散客 · 随到随泡</option>
+          <option>包间 · 观雾（4 席内）</option>
+          <option>茶会 · 四季茶会</option>
+          <option>定制 · 茶礼定制</option>
+        </select>
+        <label for="msg">想说的话（选填）</label>
+        <textarea id="msg" placeholder="日期、人数、忌口……"></textarea>
+        <button class="btn solid" type="submit">提交预约</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f-deco"></div>
+    <div class="f-brand serif-kai"><span class="seal" style="width:24px;height:24px;border:1.5px solid var(--cinnabar);color:var(--cinnabar);font-size:11px;display:inline-flex;align-items:center;justify-content:center;transform:rotate(-4deg)">山雾</span>山雾<b>茶事</b><em>·</em></div>
+    <div class="f-line">一盏茶，见山见雾</div>
+    <div class="f-copy">© 2026 山雾茶事 · 本页为企业官网演示稿（虚构品牌，版式可复用）</div>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('section > .wrap > *').forEach(el => {
+    el.classList.add('reveal');
+    io.observe(el);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作品集 · 空间与界面</title>
+<meta name="description" content="环境设计出身，做展厅与室内方案，也把方案做成能点开的网页。这里放的是作品、原型和一些走过的路。">
+<style>
+  :root{
+    --paper:#f7f4ee;
+    --paper-2:#efeade;
+    --card:#fcfaf6;
+    --ink:#1d1a15;
+    --ink-2:#4a443a;
+    --muted:#837a6b;
+    --line:#ded6c6;
+    --accent:#9d2b22;
+    --accent-soft:#f0e3e0;
+    --max:1080px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Serif SC","Songti SC","SimSun",Georgia,serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+  a{color:inherit}
+
+  /* ---------- 顶栏 ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(247,244,238,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .bar{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{font-size:15px;letter-spacing:.14em;font-weight:600}
+  .brand span{color:var(--accent)}
+  nav{display:flex;gap:26px;font-size:14px;color:var(--ink-2)}
+  nav a{text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent;transition:.25s}
+  nav a:hover{border-color:var(--accent);color:var(--accent)}
+  @media(max-width:640px){nav{display:none}}
+
+  /* ---------- 首屏 ---------- */
+  .hero{padding:96px 0 72px;position:relative}
+  .hero .eyebrow{
+    font-size:12.5px;letter-spacing:.3em;color:var(--muted);
+    text-transform:uppercase;margin-bottom:26px;
+  }
+  .hero h1{
+    font-size:clamp(30px,6vw,54px);
+    line-height:1.28;font-weight:600;letter-spacing:.02em;
+  }
+  .hero h1 em{font-style:normal;color:var(--accent)}
+  .hero p.lede{
+    margin-top:26px;max-width:640px;font-size:16.5px;color:var(--ink-2);
+  }
+  .cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:38px}
+  .btn{
+    display:inline-block;text-decoration:none;font-size:14.5px;
+    padding:12px 26px;border-radius:2px;letter-spacing:.06em;transition:.25s;
+  }
+  .btn-solid{background:var(--ink);color:#fdfbf7;border:1px solid var(--ink)}
+  .btn-solid:hover{background:var(--accent);border-color:var(--accent)}
+  .btn-ghost{border:1px solid var(--line);color:var(--ink-2)}
+  .btn-ghost:hover{border-color:var(--ink);color:var(--ink)}
+
+  /* ---------- 段落标题 ---------- */
+  section{padding:74px 0;border-top:1px solid var(--line)}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:44px}
+  .sec-head .num{font-size:13px;color:var(--accent);letter-spacing:.2em}
+  .sec-head h2{font-size:23px;font-weight:600;letter-spacing:.06em}
+  .sec-head .hint{font-size:13px;color:var(--muted);margin-left:auto}
+  @media(max-width:640px){.sec-head .hint{display:none}}
+
+  /* ---------- 作品卡 ---------- */
+  .grid{display:grid;gap:26px}
+  .card{
+    display:grid;grid-template-columns:1.15fr 1fr;gap:0;
+    background:var(--card);border:1px solid var(--line);
+    border-radius:3px;overflow:hidden;text-decoration:none;
+    transition:transform .3s ease,box-shadow .3s ease,border-color .3s;
+  }
+  .card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(29,26,21,.09);border-color:#cbbfa8}
+  .card .shot{
+    background:var(--paper-2);min-height:280px;overflow:hidden;position:relative;
+  }
+  .card .shot img{width:100%;height:100%;object-fit:cover;display:block}
+  .card .body{padding:34px 32px;display:flex;flex-direction:column}
+  .card .kicker{font-size:12.5px;letter-spacing:.22em;color:var(--accent);margin-bottom:14px}
+  .card h3{font-size:21px;font-weight:600;margin-bottom:12px;letter-spacing:.03em}
+  .card p{font-size:14.8px;color:var(--ink-2);flex:1}
+  .card .meta{
+    margin-top:22px;padding-top:16px;border-top:1px dashed var(--line);
+    display:flex;flex-wrap:wrap;gap:8px;font-size:12.8px;color:var(--muted);
+  }
+  .card .meta i{font-style:normal;background:var(--paper-2);border-radius:2px;padding:3px 10px}
+  .card .go{margin-top:18px;font-size:14px;color:var(--accent);letter-spacing:.06em}
+
+  /* ---------- 在建 ---------- */
+  .soon{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media(max-width:760px){.soon{grid-template-columns:1fr}}
+  .soon .item{
+    border:1px dashed var(--line);border-radius:3px;padding:22px 24px;
+    background:linear-gradient(180deg,rgba(252,250,246,.9),rgba(252,250,246,.4));
+  }
+  .soon .item h4{font-size:16px;font-weight:600;margin-bottom:8px}
+  .soon .item p{font-size:13.8px;color:var(--muted)}
+  .soon .badge{
+    display:inline-block;font-size:11.5px;letter-spacing:.12em;color:var(--muted);
+    border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin-bottom:12px;
+  }
+
+  /* ---------- 联系 ---------- */
+  .contact-line{max-width:660px;color:var(--ink-2);font-size:15.8px}
+  .contact-line a{
+    color:var(--accent);text-decoration:none;
+    border-bottom:1px solid rgba(157,43,34,.35);padding-bottom:1px;
+  }
+  .contact-line a:hover{border-color:var(--accent)}
+
+  footer{
+    border-top:1px solid var(--line);padding:32px 0 44px;
+    font-size:12.8px;color:var(--muted);
+  }
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  @media(max-width:760px){
+    .card{grid-template-columns:1fr}
+    .card .shot{min-height:200px}
+    .hero{padding:64px 0 48px}
+    section{padding:56px 0}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="brand">作品集<span>.</span></div>
+    <nav>
+      <a href="#work">作品</a>
+      <a href="#soon">在研项目</a>
+      <a href="#contact">联系</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <div class="wrap hero">
+    <div class="eyebrow">Space · Interface</div>
+    <h1>做空间，也做<em>能被人点开的</em><br>那一层界面。</h1>
+    <p class="lede">
+      这里放的是做过的方案、站点和原型——每个都能点进去，自己在手机上翻一遍。
+    </p>
+    <div class="cta">
+      <a class="btn btn-solid" href="#work">看作品 →</a>
+      <a class="btn btn-ghost" href="#contact">谈谈合作</a>
+    </div>
+  </div>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="num">01</span>
+        <h2>作品</h2>
+        <span class="hint">点卡片进站点，都是活的</span>
+      </div>
+
+      <div class="grid">
+
+        <a class="card" href="./shanwu/">
+          <div class="shot"><img src="./shanwu/assets/ting-song.jpg" alt="山雾茶事 · 茶空间品牌官网"></div>
+          <div class="body">
+            <div class="kicker">品牌官网 · 概念设计</div>
+            <h3>山雾茶事 · 一间城市的茶空间</h3>
+            <p>
+              从品牌调性出发做的整套官网概念：六个茶席（听松、观雾、煮雪、干茶、茶席、茶堂）
+              逐一铺陈，长短句文案 + 大片留白 + 传统色系，整站手写 HTML/CSS，无框架、无外部依赖，
+              手机上直接看也顺。
+            </p>
+            <div class="meta">
+              <i>六版式首页</i><i>响应式</i><i>手写 CSS</i><i>0 外部依赖</i>
+            </div>
+            <div class="go">进入站点 →</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="soon">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="num">02</span>
+        <h2>在研 / 待上线</h2>
+        <span class="hint">做完了我会挂上来</span>
+      </div>
+      <div class="soon">
+        <div class="item">
+          <span class="badge">MODELING</span>
+          <h4>展厅设计《中国计时历史馆》</h4>
+          <p>以传统计时民俗为主轴、科技手段为辅的展陈方案，含平面图与效果图。</p>
+        </div>
+        <div class="item">
+          <span class="badge">GAME PROTOTYPE</span>
+          <h4>《升仙》· 炁战原型 v4</h4>
+          <p>自研 Unity 2D 修仙游戏的网页原型：序章剧情 + 战斗系统，纯前端可跑。</p>
+        </div>
+        <div class="item">
+          <span class="badge">INTERACTION</span>
+          <h4>对弈 · 中国象棋 / 五子棋</h4>
+          <p>练手的交互小件，验证棋类界面与规则处理的写法。</p>
+        </div>
+        <div class="item">
+          <span class="badge">SPACE</span>
+          <h4>餐饮空间与办公空间方案</h4>
+          <p>课程与自主完成的室内方案，3ds Max 建模 + D5 渲染成图。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="num">03</span>
+        <h2>联系</h2>
+      </div>
+      <p class="contact-line">
+        想聊合作、问报价，或者只想看看某个方案是怎么做出来的，写信给我就好：
+        <a href="mailto:">（待填）</a>。两三天内会回。
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 · 本页为个人作品展示，托管于 GitHub Pages</span>
+    <span>Hand-written HTML / CSS</span>
+  </div>
+</footer>
+
+</body>
+</html>
